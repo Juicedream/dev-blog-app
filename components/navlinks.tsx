@@ -24,10 +24,13 @@ export default function NavLinks() {
           return (
             <li
               key={link.label}
-              className={cn("px-4 py-2 rounded-2xl hover:bg-secondary", {
-                "bg-primary text-white hover:bg-secondary hover:text-black":
-                  link.label === "Sign Up",
-              })}
+              className={cn(
+                "px-4 py-2 rounded-2xl hover:bg-secondary transition-colors",
+                {
+                  "bg-primary text-white hover:bg-secondary hover:text-black":
+                    link.label === "Sign Up",
+                },
+              )}
             >
               <Link href={link.href}>{link.label}</Link>
             </li>

@@ -7,8 +7,8 @@ export type User = {
   avatar?: string;
   followers?: Follow[];
   following?: Follow[];
-  createdAt: Date;
-  updatedAt: Date;
+  created_at: Date;
+  updated_at: Date;
 };
 
 export type UserRole = {
@@ -17,22 +17,23 @@ export type UserRole = {
 
 export type Blog = {
   id: string;
-  userId: string;
+  user_id: string;
   likes: Like[];
   title: string;
   content: string;
-  imageUrl: string;
+  image_url: string;
   status: BlogStatus;
-  createdAt: string;
-  updatedAt: string;
+  created_at: string;
+  updated_at: string;
 };
 
 export type Like = {
-  userId: string;
+  user_id: string;
+  blog_id: string;
 };
 
 export type Follow = {
-  followUserId: string;
+  user_id: string;
 };
 
 export type BlogStatus = {
