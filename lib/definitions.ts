@@ -3,7 +3,7 @@ export type User = {
   role: UserRole;
   name: string;
   email: string;
-  password: string;
+  password?: string;
   avatar?: string;
   followers?: Follow[];
   following?: Follow[];

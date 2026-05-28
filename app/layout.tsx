@@ -3,14 +3,14 @@ import { Geist, Geist_Mono, Roboto } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 
-const roboto = Roboto({ subsets: ["latin"], variable: "--font-sans" });
+export const roboto = Roboto({ subsets: ["latin"], variable: "--font-sans" });
 
-const geistSans = Geist({
+export const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
+export const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });

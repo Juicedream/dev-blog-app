@@ -16,6 +16,7 @@
 # next.js
 /.next/
 /out/
+/app/lib/seed/
 
 # production
 /build
@@ -23,7 +24,9 @@
 # misc
 .DS_Store
 *.pem
-# placeholder-data.ts
+
+**/placeholder-data.ts
+
 
 # debug
 npm-debug.log*
