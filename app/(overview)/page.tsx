@@ -8,8 +8,8 @@ export const metadata: Metadata = {
 
 export default function Home() {
   return (
-    <div className="rounded-2xl h-full shadow-lg shadow-black/20 mb-4">
-      <Header title={"New Blog Idea?"} />
+    <div className="rounded-t-2xl rounded-b-sm flex flex-col gap-2 shadow-lg shadow-black/20 mb-8 border pb-1">
+      <Header title={"All Blogs"} />
       <BlogsList />
     </div>
   );

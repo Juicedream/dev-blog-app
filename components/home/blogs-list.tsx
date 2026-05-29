@@ -1,5 +1,6 @@
 import { allPublishedBlogs } from "@/lib/data";
 import BlogCard from "@/components/home/blog-card";
+import { SelectSeparator } from "../ui/select";
 
 export default async function BlogsList() {
   const blogs = await allPublishedBlogs();
@@ -11,9 +12,12 @@ export default async function BlogsList() {
     );
   }
   return (
-    <div className="w-full flex flex-col gap-4 py-2 px-3">
+    <div className="w-full flex flex-col gap-4 py-2 px-3 h-200 scroll-smooth overflow-auto overflow-y-scroll scrollbar-none scrollbar-thumb-blue-300 scrollbar-track-blue-500">
       {blogs.map((blog) => (
-        <BlogCard key={blog.id} blog={blog} />
+        <div key={blog.id}>
+          <BlogCard blog={blog} />
+          <SelectSeparator />
+        </div>
       ))}
     </div>
   );
