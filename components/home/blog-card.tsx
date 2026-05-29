@@ -16,7 +16,7 @@ export default function BlogCard({ blog }: BlogCardProps) {
     blog.title.length > 40 ? blog.title.slice(0, 40) + "..." : blog.title;
   return (
     <main className="w-full rounded-xl h-23">
-      <div className="flex items-center justify-between px-4 py-2">
+      <div className="flex items-center justify-between px-2 py-2 hover:bg-slate-100/50 rounded-xl">
         {/* image and header with description */}
         <div className="flex gap-3">
           <Image

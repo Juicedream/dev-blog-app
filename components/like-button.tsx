@@ -4,7 +4,7 @@ import { useState } from "react";
 export function LikeButton({ likes }: { likes: number }) {
   const [isLiked, setIsLiked] = useState(false);
   return (
-    <div className="flex gap-1 items-center mt-2 hover:cursor-pointer">
+    <div className="flex gap-1 items-center mt-2 hover:cursor-pointer w-fit">
       <svg
         onClick={() => setIsLiked((prev) => !prev)}
         xmlns="http://www.w3.org/2000/svg"

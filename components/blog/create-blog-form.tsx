@@ -1,5 +1,6 @@
 "use client";
 import { useActionState } from "react";
+import { toast } from "sonner";
 import { BlogState, createBlogAction } from "@/lib/action";
 import {
   Field,
@@ -33,6 +34,13 @@ export function CreateBlogForm() {
     createBlog,
     initialState,
   );
+  function showToast() {
+    if (state.message) {
+      toast.error(state.message);
+    } else {
+      toast.success("Blog created successfully");
+    }
+  }
   return (
     <div className="w-full max-w-md">
       <form action={formAction}>
@@ -120,7 +128,7 @@ export function CreateBlogForm() {
               <Textarea
                 id="content"
                 placeholder="Write out your ideas"
-                className="resize-none"
+                className="resize-none overflow-y-auto scrollbar-none h-120"
                 name="content"
               />
             </Field>
@@ -138,7 +146,7 @@ export function CreateBlogForm() {
           </FieldGroup>
           <FieldGroup>
             <Field orientation={"horizontal"}>
-              <Button>
+              <Button disabled={isPending} onClick={showToast}>
                 {isPending ? <Loader2Icon className="animate-spin" /> : "Post"}
               </Button>
               <Button asChild variant={"destructive"} type="button">

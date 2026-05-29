@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { cn } from "@/lib/utils";
 import { LogOutIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 // const defaultLinks = [
 //   { label: "Sign In", href: "/sign-in" },
@@ -8,7 +8,7 @@ import { LogOutIcon } from "lucide-react";
 // ];
 const adminRoleLinks = [
   { label: "Profile", href: "/admin/profile" },
-  { label: "Users", href: "/admin/users" },
+  { label: "Devs", href: "/admin/devs" },
   { label: "My Blogs", href: "/admin/blogs" },
 ];
 

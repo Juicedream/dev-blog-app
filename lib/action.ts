@@ -1,8 +1,8 @@
 "use server";
 import postgres from "postgres";
+import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { z } from "zod";
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: "require" });
 
@@ -27,6 +27,10 @@ const CreateBlog = BlogSchema.omit({
   updated_at: true,
 });
 
+const UpdateBlog = BlogSchema.omit({
+  created_at: true,
+  updated_at: true,
+});
 export type BlogState = {
   errors?: {
     user_id?: string[];
@@ -67,6 +71,44 @@ export async function createBlogAction(
   } catch (error) {
     console.error(error);
     return { message: "Database Error: Failed to Create Blog" };
+  }
+
+  revalidatePath("/");
+  redirect("/");
+}
+
+export async function updateBlogAction(
+  { userId, blogId }: { userId: string; blogId: string },
+  prevState: BlogState | undefined,
+  formData: FormData,
+) {
+  const validatedFields = UpdateBlog.safeParse({
+    id: blogId,
+    user_id: userId,
+    title: formData.get("title"),
+    status: formData.get("status"),
+    content: formData.get("content"),
+    image_url: formData.get("image_url"),
+  });
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: "Missing Fields. Unable to update blog",
+    };
+  }
+
+  const { user_id, title, status, content, image_url, id } =
+    validatedFields.data;
+
+  try {
+    await sql`
+      UPDATE blogs
+      SET user_id = ${user_id}, title = ${title}, status = ${status}, content = ${content}, image_url = ${image_url}, updated_at = NOW()
+      WHERE id = ${id}
+    `;
+  } catch (error) {
+    console.error(error);
+    return { message: "Database Error: Failed to Update Blog" };
   }
 
   revalidatePath("/");

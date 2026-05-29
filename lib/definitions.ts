@@ -38,6 +38,4 @@ export type Follow = {
   user_id: string;
 };
 
-export type BlogStatus = {
-  status: "draft" | "published";
-};
+export type BlogStatus = "draft" | "published";
