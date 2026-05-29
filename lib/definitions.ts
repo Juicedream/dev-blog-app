@@ -18,10 +18,12 @@ export type UserRole = {
 export type Blog = {
   id: string;
   user_id: string;
-  likes: Like[];
+  likes?: Like[];
   title: string;
   content: string;
   image_url: string;
+  author_name?: string;
+  author_avatar?: string;
   status: BlogStatus;
   created_at: string;
   updated_at: string;
