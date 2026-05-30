@@ -21,19 +21,29 @@ export default function WhoToFollowCard({
   return (
     <Card className="w-full shadow-lg shadow-black/20">
       <CardHeader>
-        <CardTitle>Who to follow</CardTitle>
-        <CardDescription>Follow fellow devs like you.</CardDescription>
+        {users.length > 1 ? (
+          <>
+            <CardTitle>Who to follow</CardTitle>
+            <CardDescription>Follow fellow devs like you.</CardDescription>
+          </>
+        ) : (
+          <CardTitle className="text-center">No Users Found</CardTitle>
+        )}
       </CardHeader>
-      <CardContent className="flex w-full max-w-lg flex-col gap-2">
-        {users?.map((user) => (
-          <FollowCard key={user?.id} user={user} />
-        ))}
-      </CardContent>
-      <CardFooter className="flex-col gap-2">
-        <Button asChild variant={"link"} className="w-full">
-          <Link href={viewAllLink}>View All</Link>
-        </Button>
-      </CardFooter>
+      {users.length > 1 && (
+        <>
+          <CardContent className="flex w-full max-w-lg flex-col gap-2">
+            {users?.map((user) => (
+              <FollowCard key={user?.id} user={user} />
+            ))}
+          </CardContent>
+          <CardFooter className="flex-col gap-2">
+            <Button asChild variant={"link"} className="w-full">
+              <Link href={viewAllLink}>View All</Link>
+            </Button>
+          </CardFooter>
+        </>
+      )}
     </Card>
   );
 }

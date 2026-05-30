@@ -25,7 +25,8 @@
 .DS_Store
 *.pem
 
-**/placeholder-data.ts
+/lib/placeholder-data.ts
+
 
 
 # debug

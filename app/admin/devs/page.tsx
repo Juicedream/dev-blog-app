@@ -2,7 +2,14 @@ import FollowCard from "@/components/home/follow-card";
 import { fetchAllDevs } from "@/lib/data";
 
 export default async function Devs() {
-  const devs = await fetchAllDevs();
+  const devs = (await fetchAllDevs()) ?? [];
+  if (devs.length < 1) {
+    return (
+      <div className="flex flex-col items-center w-full justify-center">
+        <p className="text-muted-foreground mt-3 text-xl">No Devs Found</p>
+      </div>
+    );
+  }
   return (
     <div className="flex flex-col items-center w-full justify-center gap-5">
       <p className="mr-auto text-xl font-bold">All Devs</p>

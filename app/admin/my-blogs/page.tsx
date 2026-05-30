@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button";
 import { fetchUserBlogs } from "@/lib/data";
 
 export default async function MyAdminBlogs() {
-  const blogs = await fetchUserBlogs("87a68ae1-71a7-4f73-be99-3bddb73d7267");
+  const blogs =
+    (await fetchUserBlogs("87a68ae1-71a7-4f73-be99-3bddb73d7267")) ?? [];
   if (blogs.length < 1) {
     return (
       <div className="flex flex-col items-center justify-center my-4 w-full">

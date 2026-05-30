@@ -4,81 +4,115 @@ import { User, Blog } from "@/lib/definitions";
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: "require" });
 
 export async function usersToFollow() {
-  const data = await sql<User[]>`
+  let data: User[] = [];
+  try {
+    data = await sql<User[]>`
   SELECT  id, role, name, email, avatar, created_at
   FROM users
   ORDER BY created_at DESC
   LIMIT 5
   `;
+  } catch (error) {
+    console.error("Error fetching users to follow: ", error);
+    return data;
+  }
+
   return data;
 }
 export async function fetchAllDevs() {
-  const data = await sql<User[]>`
+  let data: User[] = [];
+  try {
+    data = await sql<User[]>`
   SELECT  id, role, name, email, avatar, created_at
   FROM users
   ORDER BY created_at DESC
   LIMIT 5
   `;
+  } catch (error) {
+    console.error("Error fetching all devs: ", error);
+    return data;
+  }
+
   return data;
 }
 
 export async function allPublishedBlogs() {
-  const blogs = await sql<Blog[]>`
-  SELECT 
-      blogs.id,
-      blogs.title,
-      blogs.content,
-      blogs.image_url,
-      blogs.status,
-      blogs.created_at,
-      blogs.updated_at,
-      users.id AS user_id,
-      users.name AS author_name,
-      users.avatar AS author_avatar
-  FROM blogs
-  INNER JOIN users ON blogs.user_id = users.id
-  WHERE blogs.status = 'published' 
-  ORDER BY blogs.updated_at DESC
-  LIMIT 10
+  let blogs: Blog[] = [];
+  try {
+    blogs = await sql<Blog[]>`
+    SELECT 
+        blogs.id,
+        blogs.title,
+        blogs.content,
+        blogs.image_url,
+        blogs.status,
+        blogs.created_at,
+        blogs.updated_at,
+        users.id AS user_id,
+        users.name AS author_name,
+        users.avatar AS author_avatar
+    FROM blogs
+    INNER JOIN users ON blogs.user_id = users.id
+    WHERE blogs.status = 'published' 
+    ORDER BY blogs.updated_at DESC
+    LIMIT 10
   `;
+  } catch (error) {
+    console.error("Error fetching all published blogs: ", error);
+    return blogs;
+  }
+
   return blogs;
 }
 
 export async function fetchBlogById(blogId: string) {
-  const blog = await sql<Blog[]>`
-  SELECT 
-      blogs.id,
-      blogs.title,
-      blogs.content,
-      blogs.image_url,
-      blogs.status,
-      blogs.created_at,
-      blogs.updated_at,
-      users.id AS user_id,
-      users.name AS author_name,
-      users.avatar AS author_avatar
-  FROM blogs
-  INNER JOIN users ON blogs.user_id = users.id
-  WHERE blogs.id = ${blogId}
-  LIMIT 1
+  let blog: Blog[] = [];
+  try {
+    blog = await sql<Blog[]>`
+    SELECT 
+        blogs.id,
+        blogs.title,
+        blogs.content,
+        blogs.image_url,
+        blogs.status,
+        blogs.created_at,
+        blogs.updated_at,
+        users.id AS user_id,
+        users.name AS author_name,
+        users.avatar AS author_avatar
+    FROM blogs
+    INNER JOIN users ON blogs.user_id = users.id
+    WHERE blogs.id = ${blogId}
+    LIMIT 1
   `;
+  } catch (error) {
+    console.error("Error fetching blogs by id: ", error);
+    return blog[0];
+  }
   return blog[0];
 }
 
 export async function fetchUserBlogs(userId: string) {
-  const blogs = await sql<Blog[]>`
-  SELECT 
-      blogs.id,
-      blogs.title,
-      blogs.content,
-      blogs.image_url,
-      blogs.status,
-      blogs.created_at,
-      blogs.updated_at
-  FROM blogs
-  WHERE blogs.user_id = ${userId}
-  ORDER BY blogs.created_at DESC
-  LIMIT 5
-  `;
+  let blogs: Blog[] = [];
+  try {
+    blogs = await sql<Blog[]>`
+    SELECT 
+        blogs.id,
+        blogs.title,
+        blogs.content,
+        blogs.image_url,
+        blogs.status,
+        blogs.created_at,
+        blogs.updated_at
+    FROM blogs
+    WHERE blogs.user_id = ${userId}
+    ORDER BY blogs.created_at DESC
+    LIMIT 5
+    `;
+  } catch (error) {
+    console.error("Error fetching user blogs by user id: ", error);
+    return blogs;
+  }
+
   return blogs;
 }

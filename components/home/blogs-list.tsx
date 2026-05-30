@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
 export default async function BlogsList() {
-  const blogs = await allPublishedBlogs();
+  const blogs = (await allPublishedBlogs()) ?? [];
   if (blogs.length < 1) {
     return (
       <div className="flex items-center justify-center my-4">

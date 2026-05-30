@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { LikeButton } from "@/components/like-button";
 
 import { Blog } from "@/lib/definitions";
+import { shortenText } from "@/utils/helpers";
 
 type BlogCardProps = {
   blog: Blog;
@@ -16,10 +17,8 @@ export default function BlogCard({
   children,
   showStatus = false,
 }: BlogCardProps) {
-  const blogDescription =
-    blog.content.length > 60 ? blog.content.slice(0, 60) + "..." : blog.content;
-  const blogTitle =
-    blog.title.length > 40 ? blog.title.slice(0, 40) + "..." : blog.title;
+  const blogDescription = shortenText(blog.content, 60);
+  const blogTitle = shortenText(blog.title, 40);
   return (
     <main className="w-full rounded-xl h-23">
       <div className="flex items-center justify-between px-2 py-2 hover:bg-slate-100/50 rounded-xl border-2 border-slate-100">
@@ -54,5 +53,3 @@ export default function BlogCard({
     </main>
   );
 }
-
-// "#ff4757"
