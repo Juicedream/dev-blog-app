@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -10,7 +11,13 @@ import {
 import FollowCard from "@/components/home/follow-card";
 import { User } from "@/lib/definitions";
 
-export default function WhoToFollowCard({ users }: { users: User[] }) {
+export default function WhoToFollowCard({
+  users,
+  viewAllLink,
+}: {
+  users: User[];
+  viewAllLink: string;
+}) {
   return (
     <Card className="w-full shadow-lg shadow-black/20">
       <CardHeader>
@@ -23,8 +30,8 @@ export default function WhoToFollowCard({ users }: { users: User[] }) {
         ))}
       </CardContent>
       <CardFooter className="flex-col gap-2">
-        <Button variant={"link"} className="w-full">
-          View All
+        <Button asChild variant={"link"} className="w-full">
+          <Link href={viewAllLink}>View All</Link>
         </Button>
       </CardFooter>
     </Card>

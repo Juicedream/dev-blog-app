@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 const adminRoleLinks = [
   { label: "Profile", href: "/admin/profile" },
   { label: "Devs", href: "/admin/devs" },
-  { label: "My Blogs", href: "/admin/blogs" },
+  { label: "My Blogs", href: "/admin/my-blogs" },
 ];
 
 // const userRoleLinks = [

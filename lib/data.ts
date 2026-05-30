@@ -12,6 +12,15 @@ export async function usersToFollow() {
   `;
   return data;
 }
+export async function fetchAllDevs() {
+  const data = await sql<User[]>`
+  SELECT  id, role, name, email, avatar, created_at
+  FROM users
+  ORDER BY created_at DESC
+  LIMIT 5
+  `;
+  return data;
+}
 
 export async function allPublishedBlogs() {
   const blogs = await sql<Blog[]>`
@@ -29,7 +38,8 @@ export async function allPublishedBlogs() {
   FROM blogs
   INNER JOIN users ON blogs.user_id = users.id
   WHERE blogs.status = 'published' 
-  ORDER BY blogs.created_at DESC
+  ORDER BY blogs.updated_at DESC
+  LIMIT 10
   `;
   return blogs;
 }
@@ -53,4 +63,22 @@ export async function fetchBlogById(blogId: string) {
   LIMIT 1
   `;
   return blog[0];
+}
+
+export async function fetchUserBlogs(userId: string) {
+  const blogs = await sql<Blog[]>`
+  SELECT 
+      blogs.id,
+      blogs.title,
+      blogs.content,
+      blogs.image_url,
+      blogs.status,
+      blogs.created_at,
+      blogs.updated_at
+  FROM blogs
+  WHERE blogs.user_id = ${userId}
+  ORDER BY blogs.created_at DESC
+  LIMIT 5
+  `;
+  return blogs;
 }
