@@ -6,22 +6,22 @@ import { cn } from "@/lib/utils";
 //   { label: "Sign In", href: "/sign-in" },
 //   { label: "Sign Up", href: "/sign-up" },
 // ];
-const adminRoleLinks = [
-  { label: "Profile", href: "/admin/profile" },
-  { label: "Devs", href: "/admin/devs" },
-  { label: "My Blogs", href: "/admin/my-blogs" },
-];
-
-// const userRoleLinks = [
-//   { label: "Profile", href: "/user/profile" },
-//   { label: "My Blogs", href: "/user/blogs" },
+// const adminRoleLinks = [
+//   { label: "Profile", href: "/admin/profile" },
+//   { label: "Devs", href: "/admin/devs" },
+//   { label: "My Blogs", href: "/admin/my-blogs" },
 // ];
+
+const userRoleLinks = [
+  { label: "Profile", href: "/user/profile" },
+  { label: "My Blogs", href: "/user/my-blogs" },
+];
 
 export default function NavLinks() {
   return (
     <div className="flex items-center">
       <ul className="flex gap-4 md:gap-6 items-center">
-        {adminRoleLinks.map((link) => {
+        {userRoleLinks.map((link) => {
           return (
             <li
               key={link.label}
