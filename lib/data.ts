@@ -3,12 +3,15 @@ import { User, Blog } from "@/lib/definitions";
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: "require" });
 
-export async function usersToFollow() {
+export async function usersToFollow(userId: string) {
+  if (!userId) return null;
+
   let data: User[] = [];
   try {
     data = await sql<User[]>`
   SELECT  id, role, name, email, avatar, created_at
   FROM users
+  WHERE id != ${userId}
   ORDER BY created_at DESC
   LIMIT 5
   `;

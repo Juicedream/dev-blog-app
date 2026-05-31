@@ -4,32 +4,29 @@ import { usePathname } from "next/navigation";
 import { LogOutIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const defaultLinks = [
-  { label: "Sign In", href: "/sign-in" },
-  { label: "Sign Up", href: "/sign-up" },
-];
-// const adminRoleLinks = [
-//   { label: "Profile", href: "/admin/profile" },
-//   { label: "Devs", href: "/admin/devs" },
-//   { label: "My Blogs", href: "/admin/my-blogs" },
-// ];
+type RoutesPropsType = {
+  label: string;
+  href: string;
+};
 
-// const userRoleLinks = [
-//   { label: "Profile", href: "/user/profile" },
-//   { label: "My Blogs", href: "/user/my-blogs" },
-// ];
-
-export default function NavLinks() {
+export default function NavLinks({
+  routes,
+  handleLogout,
+}: {
+  routes: RoutesPropsType[];
+  handleLogout: () => void;
+}) {
   const pathname = usePathname();
+
   return (
-    <div className="flex items-center">
+    <div className="flex items-center gap-2">
       <ul className="flex gap-4 md:gap-6 items-center">
-        {defaultLinks.map((link) => {
+        {routes?.map((link) => {
           return (
             <li
               key={link.label}
               className={cn(
-                "px-4 py-2 rounded-2xl hover:bg-secondary transition-colors",
+                "px-4 py-2 rounded-2xl hover:bg-secondary transition-colors duration-300 ease-in-out",
                 { "bg-primary/90 text-white": pathname === link.href },
               )}
             >
@@ -38,7 +35,10 @@ export default function NavLinks() {
           );
         })}
       </ul>
-      <div className="grow p-2 hover:bg-secondary rounded-2xl">
+      <div
+        className="grow p-2 hover:bg-secondary rounded-2xl"
+        onClick={handleLogout}
+      >
         <LogOutIcon className="w-20 text-red-500" />
       </div>
     </div>

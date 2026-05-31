@@ -1,4 +1,4 @@
-import { geistMono } from "@/app/layout";
+import { geistMono } from "@/lib/fonts";
 import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";
 import Link from "next/link";

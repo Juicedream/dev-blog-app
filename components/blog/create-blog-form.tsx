@@ -24,12 +24,9 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Loader2Icon } from "lucide-react";
 
-export function CreateBlogForm() {
+export function CreateBlogForm({ userId }: { userId: string }) {
   const initialState: BlogState = { errors: {}, message: null };
-  const createBlog = createBlogAction.bind(
-    null,
-    "87a68ae1-71a7-4f73-be99-3bddb73d7267",
-  );
+  const createBlog = createBlogAction.bind(null, userId);
   const [state, formAction, isPending] = useActionState(
     createBlog,
     initialState,

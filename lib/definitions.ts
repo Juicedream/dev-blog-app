@@ -1,3 +1,5 @@
+import { extractSimilarItemsFromArrayObj } from "@/utils/helpers";
+
 export type User = {
   id: string;
   role: UserRole;
@@ -39,3 +41,35 @@ export type Follow = {
 };
 
 export type BlogStatus = "draft" | "published";
+
+export type SessionPayload = {
+  userId: string;
+  role: UserRole;
+  expiresAt: Date;
+};
+
+export const defaultLinks = [
+  { label: "Sign In", href: "/sign-in" },
+  { label: "Sign Up", href: "/sign-up" },
+];
+export const adminRoleLinks = [
+  { label: "Profile", href: "/admin/profile" },
+  { label: "Devs", href: "/admin/devs" },
+  { label: "My Blogs", href: "/admin/my-blogs" },
+];
+
+export const userRoleLinks = [
+  { label: "Profile", href: "/user/profile" },
+  { label: "My Blogs", href: "/user/my-blogs" },
+];
+
+export const protectedLinks = [
+  ...extractSimilarItemsFromArrayObj("href", adminRoleLinks),
+  ...extractSimilarItemsFromArrayObj("href", userRoleLinks),
+  "/blogs",
+  "/blogs/create",
+  "/blogs/:id",
+  "/blogs/:id/edit",
+];
+
+// console.log({ protectedLinks });

@@ -4,16 +4,18 @@ import { BlogActionButtons } from "@/components/blog/blog-action-buttons";
 import BlogCard from "@/components/home/blog-card";
 import { Button } from "@/components/ui/button";
 import { fetchUserBlogs } from "@/lib/data";
+import { getUser } from "@/app/lib/dal";
 
 export default async function MyUserBlogs() {
-  const blogs = await fetchUserBlogs("87a68ae1-71a7-4f73-be99-3bddb73d7267");
+  const user = await getUser();
+  const blogs = await fetchUserBlogs(user?.id);
 
   if (blogs.length < 1) {
     return (
       <div className="flex flex-col items-center justify-center my-4 w-full">
         <p className="text-muted-foreground text-xl">No Blogs Found</p>
         <Button asChild variant={"secondary"}>
-          <Link href={"/create"} className="flex gap-2 items-center">
+          <Link href={"/blogs/create"} className="flex gap-2 items-center">
             <PlusIcon />
             Create Blog
           </Link>

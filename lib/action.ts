@@ -62,6 +62,9 @@ export async function createBlogAction(
   }
 
   const { user_id, title, status, content, image_url } = validatedFields.data;
+  if (!user_id) {
+    return { message: "Invalid user id" };
+  }
 
   try {
     await sql`

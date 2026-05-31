@@ -3,3 +3,10 @@ export function shortenText(text: string, textLength: number) {
     text.length > textLength ? text.slice(0, textLength) : text;
   return shortenText;
 }
+
+export function extractSimilarItemsFromArrayObj(
+  itemToBeExtacted: string,
+  array: Record<string, unknown>[] = [],
+) {
+  return array.map((arrItem) => arrItem[itemToBeExtacted]);
+}
