@@ -4,7 +4,7 @@ import { fetchAllDevs } from "@/lib/data";
 
 export default async function Devs() {
   const currentUser = await getUser();
-  const devs = (await fetchAllDevs(currentUser?.id)) ?? [];
+  const devs = await fetchAllDevs(currentUser?.id);
   if (devs.length < 1) {
     return (
       <div className="flex flex-col items-center w-full justify-center">
