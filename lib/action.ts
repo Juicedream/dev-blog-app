@@ -141,12 +141,11 @@ export async function deleteBlogByIdAction(
 export async function toggleLikeAction(
   { blogId, userId }: { blogId: string; userId: string },
   prevState: { liked: boolean; likes: number },
-
   _formData: FormData,
 ) {
   try {
     const existing = await sql`
-      SELECT id from likes
+      SELECT id FROM likes
       WHERE blog_id = ${blogId} AND user_id = ${userId}
     `;
     if (existing.length > 0) {
@@ -172,6 +171,42 @@ export async function toggleLikeAction(
     };
   } catch (error) {
     console.error("Error toggling like: ", error);
+    return prevState;
+  }
+}
+export async function toggleFollowAction(
+  { userId, followUserId }: { userId: string; followUserId: string },
+  prevState: { following: boolean },
+  _formData: FormData,
+) {
+  try {
+    const alreadyFollowing = await sql`
+      SELECT id FROM follows 
+      WHERE follower_id = ${followUserId} AND following_id = ${userId}
+    `;
+    console.log({ alreadyFollowing });
+
+    let status: boolean;
+    if (alreadyFollowing.length > 0) {
+      // unfollow
+      await sql`
+        DELETE FROM follows
+        WHERE follower_id = ${followUserId} AND following_id = ${userId}
+      `;
+      status = false;
+    } else {
+      // Follow
+      await sql`
+      INSERT INTO follows (follower_id, following_id)
+      VALUES (${followUserId}, ${userId})
+      `;
+      status = true;
+    }
+
+    revalidatePath("/");
+    return { following: status };
+  } catch (error) {
+    console.error("Error following user: ", error);
     return prevState;
   }
 }

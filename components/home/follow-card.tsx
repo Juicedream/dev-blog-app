@@ -1,3 +1,13 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+"use client";
+
+import {
+  useState,
+  useOptimistic,
+  startTransition,
+  useActionState,
+} from "react";
+import { toggleFollowAction } from "@/lib/action";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Item,
@@ -12,9 +22,29 @@ import { User } from "@/lib/definitions";
 
 type FollowCardProps = {
   user: User;
+  currentUser: User;
+  following: boolean;
 };
 
-export default function FollowCard({ user }: FollowCardProps) {
+export default function FollowCard({
+  user,
+  currentUser,
+  following,
+}: FollowCardProps) {
+  const toggleFollow = toggleFollowAction.bind(null, {
+    userId: currentUser.id,
+    followUserId: user.id,
+  });
+  const [state, formAction, pending] = useActionState(toggleFollow, {
+    following: following,
+  });
+  const [optimisticState, addOptimistic] = useOptimistic(
+    state,
+    (current, _) => ({
+      following: !current.following,
+    }),
+  );
+  // const [following, setFollowing] = useState(false);
   const fallbackName =
     user.name.split(" ")[0].charAt(0) + " " + user.name.split(" ")[1].charAt(0);
   return (
@@ -30,14 +60,24 @@ export default function FollowCard({ user }: FollowCardProps) {
         <ItemDescription>Developer</ItemDescription>
       </ItemContent>
       <ItemActions>
-        <Button
-          size="lg"
-          variant={"default"}
-          aria-label="Follow"
-          className="rounded-xl"
+        <form
+          action={formAction}
+          onSubmit={() => {
+            startTransition(() => {
+              addOptimistic(null);
+            });
+          }}
         >
-          Follow
-        </Button>
+          <Button
+            disabled={pending}
+            size="lg"
+            variant={optimisticState.following ? "secondary" : "default"}
+            aria-label="Follow"
+            className="rounded-xl"
+          >
+            {optimisticState.following ? "Following" : "Follow"}
+          </Button>
+        </form>
       </ItemActions>
     </Item>
   );

@@ -7,8 +7,8 @@ export type User = {
   email: string;
   password?: string;
   avatar?: string;
-  followers?: Follow[];
-  following?: Follow[];
+  follower_id?: Follow[];
+  following_id?: Follow[];
   created_at: Date;
   updated_at: Date;
 };

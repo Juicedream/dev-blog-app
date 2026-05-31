@@ -2,12 +2,20 @@ import { ReactNode } from "react";
 
 import WhoToFollowCard from "@/components/home/who-to-follow-card";
 
-import { usersToFollow } from "@/lib/data";
+import { fetchUserFollows, usersToFollow } from "@/lib/data";
 import { getUser } from "@/app/lib/dal";
+import { User } from "@/lib/definitions";
+import { extractSimilarItemsFromArrayObj } from "@/utils/helpers";
 
 export default async function Template({ children }: { children: ReactNode }) {
   const currentUser = (await getUser()) ?? null;
-  const users = (await usersToFollow(currentUser?.id)) ?? [];
+  const users = await usersToFollow(currentUser?.id);
+  const allFollowing = (await fetchUserFollows(currentUser?.id)) ?? [];
+  const extractedFollowersId = extractSimilarItemsFromArrayObj(
+    "follower_id",
+    allFollowing,
+  ) as string[];
+
   const link = `/${currentUser?.role}/devs` as string;
   return (
     <div className="flex flex-col h-screen w-full">
@@ -15,7 +23,12 @@ export default async function Template({ children }: { children: ReactNode }) {
         <div className="w-full">{children}</div>
         {currentUser && (
           <aside className="shrink-0 hidden md:block w-100 rounded-2xl">
-            <WhoToFollowCard users={users} viewAllLink={link} />
+            <WhoToFollowCard
+              users={users as User[]}
+              viewAllLink={link}
+              currentUser={currentUser as User}
+              followings={extractedFollowersId}
+            />
           </aside>
         )}
       </div>

@@ -1,26 +1,32 @@
 import postgres from "postgres";
 import { User, Blog } from "@/lib/definitions";
 
-const sql = postgres(process.env.POSTGRES_URL!, { ssl: "require" });
+const sql = postgres(process.env.POSTGRES_URL!, {
+  ssl: "require",
+  prepare: false,
+});
 
 export async function usersToFollow(userId: string) {
   if (!userId) return null;
 
-  let data: User[] = [];
   try {
-    data = await sql<User[]>`
-  SELECT  id, role, name, email, avatar, created_at
+    const follows = await fetchUserFollows(userId);
+
+    // Build list of ids to exclude: people I follow + myself
+    const excludeIds = [userId, ...follows.map((f) => f.follower_id as string)];
+
+    const data = await sql<User[]>`
+  SELECT id, role, name, email, avatar, created_at
   FROM users
-  WHERE id != ${userId}
+   WHERE id NOT IN ${sql(excludeIds)}
   ORDER BY created_at DESC
   LIMIT 5
-  `;
+`;
+    return data;
   } catch (error) {
     console.error("Error fetching users to follow: ", error);
-    return data;
+    return [];
   }
-
-  return data;
 }
 export async function fetchAllDevs(userId: string) {
   let data: User[] = [];
@@ -135,4 +141,13 @@ export async function fetchUserInitialLike(blogId: string, userId: string) {
     SELECT id FROM likes WHERE blog_id = ${blogId} AND user_id = ${userId}
   `;
   return userLike;
+}
+
+export async function fetchUserFollows(userId: string) {
+  const data = await sql`
+    SELECT follower_id FROM follows
+    WHERE following_id = ${userId}
+  `;
+
+  return data;
 }
