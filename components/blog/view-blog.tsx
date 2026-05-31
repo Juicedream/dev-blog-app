@@ -2,7 +2,13 @@ import { Blog } from "@/lib/definitions";
 import { fetchBlogById } from "@/lib/data";
 import BlogCardView from "./blog-card-view";
 
-export default async function BlogView({ blogId }: { blogId: string }) {
+export default async function BlogView({
+  blogId,
+  userId,
+}: {
+  blogId: string;
+  userId: string;
+}) {
   const blog: Blog = (await fetchBlogById(blogId)) ?? {};
   if (!blog) {
     return (
@@ -13,6 +19,9 @@ export default async function BlogView({ blogId }: { blogId: string }) {
       </div>
     );
   }
+  const allowActions = blog.user_id === userId;
 
-  return <BlogCardView allowActions={true} blog={blog} preview={false} />;
+  return (
+    <BlogCardView allowActions={allowActions} blog={blog} preview={false} />
+  );
 }

@@ -105,7 +105,9 @@ export default function BlogCardView({
             </p>
             <div className="flex gap-2 items-center">
               <p className="text-sm font-semibold">Created By:</p>
-              <Badge variant={"default"}>{blog.author_name}</Badge>
+              <Badge variant={"default"}>
+                {allowActions ? "You" : blog.author_name}
+              </Badge>
             </div>
           </div>
         </div>
