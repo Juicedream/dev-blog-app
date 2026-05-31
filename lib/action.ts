@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use server";
 import postgres from "postgres";
 import { z } from "zod";
@@ -118,10 +119,29 @@ export async function updateBlogAction(
   redirect("/");
 }
 
+export async function deleteBlogByIdAction(
+  blogId: string,
+  prevState: { message: string | null; errors: object } | undefined,
+  _: FormData,
+) {
+  if (!blogId) return;
+  try {
+    await sql`
+      DELETE FROM blogs
+      WHERE id = ${blogId}
+    `;
+  } catch (error) {
+    console.error("Database Error. Unable to delete blog ", error);
+    return { message: "Database Error: Failed to delete blog", errors: {} };
+  }
+  revalidatePath("/");
+  redirect("/");
+}
+
 export async function toggleLikeAction(
   { blogId, userId }: { blogId: string; userId: string },
   prevState: { liked: boolean; likes: number },
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   _formData: FormData,
 ) {
   try {

@@ -27,7 +27,7 @@ export default function WhoToFollowCard({
             <CardDescription>Follow fellow devs like you.</CardDescription>
           </>
         ) : (
-          <CardTitle className="text-center">No Users Found</CardTitle>
+          <CardTitle className="text-center">No Devs Found</CardTitle>
         )}
       </CardHeader>
       {users.length > 1 && (

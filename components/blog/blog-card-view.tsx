@@ -1,34 +1,35 @@
 import Image from "next/image";
 import Link from "next/link";
-import { marked } from "marked";
 import { ArrowLeft, EarthIcon, PenBoxIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { LikeButton } from "@/components/like-button";
 import { BlogActionButtons } from "@/components/blog/blog-action-buttons";
-import { Blog } from "@/lib/definitions";
+import { Blog, User } from "@/lib/definitions";
 import { cn } from "@/lib/utils";
-import { getUser } from "@/app/lib/dal";
-import { fetchLikesForBlog, fetchUserInitialLike } from "@/lib/data";
 import { BlogContent } from "@/components/blog/blog-content";
 
-export default async function BlogCardView({
+export default function BlogCardView({
   blog,
+  user,
+  content,
+  likesResult,
+  userLike,
   allowActions = false,
   preview,
   showLikeButton = true,
   showBackBtn = true,
 }: {
   blog: Blog;
+  user: User;
+  content: string;
+  likesResult: number;
+  userLike: Record<string, unknown>[];
   allowActions?: boolean;
   preview?: boolean;
   showLikeButton?: boolean;
   showBackBtn?: boolean;
 }) {
-  const user = await getUser();
-  const content = await marked(blog.content);
-  const likesResult = await fetchLikesForBlog(blog.id);
-  const userLike = await fetchUserInitialLike(blog.id, user?.id);
   const created_at = new Date(blog.created_at).toDateString();
   const updated_at = new Date(blog.updated_at).toDateString();
   return (

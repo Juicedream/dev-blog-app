@@ -26,7 +26,9 @@ export default async function MyUserBlogs() {
 
   return (
     <div className="flex flex-col items-center w-full justify-center gap-5">
-      <p className="mr-auto text-xl font-bold">My Blogs</p>
+      <p className="mr-auto text-xl font-bold">
+        My Blogs {blogs.length > 0 && `(${blogs.length})`}
+      </p>
       <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-4 w-full">
         {blogs.map((blog) => {
           return (

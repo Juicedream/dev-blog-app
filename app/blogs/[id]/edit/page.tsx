@@ -1,5 +1,12 @@
+import { getUser } from "@/app/lib/dal";
 import { EditBlogForm } from "@/components/blog/edit-blog-form";
-import { fetchBlogById } from "@/lib/data";
+import {
+  fetchBlogById,
+  fetchLikesForBlog,
+  fetchUserInitialLike,
+} from "@/lib/data";
+import { User } from "@/lib/definitions";
+import { marked } from "marked";
 export const metadata = {
   title: "Edit Blog",
 };
@@ -14,6 +21,10 @@ export default async function EditBlogPage(
   const paramsProps = await props;
   const { id } = await paramsProps?.params;
   const blog = await fetchBlogById(id);
+  const user = (await getUser()) as User;
+  const content = await marked(blog.content);
+  const likesResult = await fetchLikesForBlog(blog.id);
+  const userLike = await fetchUserInitialLike(blog.id, user?.id);
 
   if (!blog) {
     return (
@@ -25,5 +36,13 @@ export default async function EditBlogPage(
     );
   }
 
-  return <EditBlogForm blog={blog} />;
+  return (
+    <EditBlogForm
+      blog={blog}
+      user={user}
+      likesResult={likesResult}
+      content={content}
+      userLike={userLike}
+    />
+  );
 }

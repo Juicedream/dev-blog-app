@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ComputerIcon } from "lucide-react";
-// import { User } from "@/lib/definitions";
 import NavLinks from "@/components/navlinks";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 

@@ -22,22 +22,34 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Blog, BlogStatus } from "@/lib/definitions";
+import { Blog, BlogStatus, User } from "@/lib/definitions";
 import BlogCardView from "./blog-card-view";
 import type { BlogState } from "@/lib/action";
 import { updateBlogAction } from "@/lib/action";
 import { Loader2Icon } from "lucide-react";
 
-export function EditBlogForm({ blog }: { blog: Blog }) {
+export function EditBlogForm({
+  blog,
+  content,
+  user,
+  userLike,
+  likesResult,
+}: {
+  blog: Blog;
+  content: string;
+  user: User;
+  userLike: Record<string, unknown>[];
+  likesResult: number;
+}) {
   const [title, setTitle] = useState(blog.title || "");
-  const [content, setContent] = useState(blog.content || "");
+  const [blogContent, setBlogContent] = useState(content || "");
   const [imageUrl, setImageUrl] = useState(blog.image_url || "");
   const [status, setStatus] = useState<BlogStatus>(blog.status as BlogStatus);
   const fullBlog = {
     id: blog.id,
     user_id: blog.user_id,
     title,
-    content,
+    content: blogContent,
     image_url: imageUrl,
     status,
     created_at: "March 1, 2000",
@@ -127,8 +139,8 @@ export function EditBlogForm({ blog }: { blog: Blog }) {
                   id="content"
                   placeholder="Write out your ideas"
                   className="resize-none overflow-y-auto scrollbar-none h-120"
-                  value={content}
-                  onChange={(e) => setContent(e.target.value)}
+                  value={blogContent}
+                  onChange={(e) => setBlogContent(e.target.value)}
                 />
               </Field>
             </FieldGroup>
@@ -179,6 +191,10 @@ export function EditBlogForm({ blog }: { blog: Blog }) {
             preview={true}
             showLikeButton={false}
             showBackBtn={false}
+            likesResult={likesResult}
+            user={user}
+            content={blogContent}
+            userLike={userLike}
           />
           <Button
             onClick={showToast}

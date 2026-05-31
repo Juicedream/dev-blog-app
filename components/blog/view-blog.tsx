@@ -1,6 +1,12 @@
-import { Blog } from "@/lib/definitions";
-import { fetchBlogById } from "@/lib/data";
+import { Blog, User } from "@/lib/definitions";
+import {
+  fetchBlogById,
+  fetchLikesForBlog,
+  fetchUserInitialLike,
+} from "@/lib/data";
 import BlogCardView from "./blog-card-view";
+import { getUser } from "@/app/lib/dal";
+import { marked } from "marked";
 
 export default async function BlogView({
   blogId,
@@ -10,6 +16,10 @@ export default async function BlogView({
   userId: string;
 }) {
   const blog: Blog = await fetchBlogById(blogId);
+  const user = (await getUser()) as User;
+  const content = await marked(blog.content);
+  const likesResult = await fetchLikesForBlog(blog.id);
+  const userLike = await fetchUserInitialLike(blog.id, user?.id);
   if (!blog) {
     return (
       <div className="flex flex-col items-center w-full justify-center min-h-dvh">
@@ -22,6 +32,14 @@ export default async function BlogView({
   const allowActions = blog.user_id === userId;
 
   return (
-    <BlogCardView allowActions={allowActions} blog={blog} preview={false} />
+    <BlogCardView
+      allowActions={allowActions}
+      blog={blog}
+      preview={false}
+      user={user}
+      likesResult={likesResult}
+      content={content}
+      userLike={userLike}
+    />
   );
 }
