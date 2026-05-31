@@ -8,8 +8,11 @@ import { LikeButton } from "@/components/like-button";
 import { BlogActionButtons } from "@/components/blog/blog-action-buttons";
 import { Blog } from "@/lib/definitions";
 import { cn } from "@/lib/utils";
+import { getUser } from "@/app/lib/dal";
+import { fetchLikesForBlog, fetchUserInitialLike } from "@/lib/data";
+import { BlogContent } from "@/components/blog/blog-content";
 
-export default function BlogCardView({
+export default async function BlogCardView({
   blog,
   allowActions = false,
   preview,
@@ -22,6 +25,10 @@ export default function BlogCardView({
   showLikeButton?: boolean;
   showBackBtn?: boolean;
 }) {
+  const user = await getUser();
+  const content = await marked(blog.content);
+  const likesResult = await fetchLikesForBlog(blog.id);
+  const userLike = await fetchUserInitialLike(blog.id, user?.id);
   const created_at = new Date(blog.created_at).toDateString();
   const updated_at = new Date(blog.updated_at).toDateString();
   return (
@@ -81,7 +88,14 @@ export default function BlogCardView({
                     Back
                   </Link>
                 </Button>
-                {showLikeButton && <LikeButton likes={1.5} />}
+                {showLikeButton && (
+                  <LikeButton
+                    blogId={blog.id}
+                    userId={user?.id}
+                    initialLikes={likesResult}
+                    initialLiked={userLike.length > 0}
+                  />
+                )}
               </div>
             )}
             <h1 className="text-2xl font-bold">{blog.title}</h1>
@@ -92,13 +106,7 @@ export default function BlogCardView({
               {allowActions && <BlogActionButtons blogId={blog.id} />}
             </div>
           </div>
-          <div className="overflow-y-auto scroll-smooth scrollbar-none h-74 border border-blue-500/20 rounded-md px-2 py-2 shadow-xs shadow-black/10 bg-gray-100">
-            {/* <p className="text-sm font-semibold text-wrap">{blog.content}</p> */}
-            <p
-              className="text-sm font-semibold text-wrap"
-              dangerouslySetInnerHTML={{ __html: marked(blog.content) }}
-            ></p>
-          </div>
+          <BlogContent content={content} />
           <div className="flex justify-between items-center">
             <p className="italic text-xs text-accent-foreground">
               Updated on: {updated_at}

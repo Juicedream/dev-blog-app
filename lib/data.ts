@@ -22,12 +22,13 @@ export async function usersToFollow(userId: string) {
 
   return data;
 }
-export async function fetchAllDevs() {
+export async function fetchAllDevs(userId: string) {
   let data: User[] = [];
   try {
     data = await sql<User[]>`
   SELECT  id, role, name, email, avatar, created_at
   FROM users
+  WHERE id != ${userId}
   ORDER BY created_at DESC
   LIMIT 5
   `;
@@ -118,4 +119,20 @@ export async function fetchUserBlogs(userId: string) {
   }
 
   return blogs;
+}
+
+export async function fetchLikesForBlog(blogId: string) {
+  const likes = await sql`
+    SELECT COUNT(user_id)
+    FROM likes
+    WHERE blog_id = ${blogId}
+  `;
+  return Number(likes[0]?.count);
+}
+
+export async function fetchUserInitialLike(blogId: string, userId: string) {
+  const userLike = await sql`
+    SELECT id FROM likes WHERE blog_id = ${blogId} AND user_id = ${userId}
+  `;
+  return userLike;
 }

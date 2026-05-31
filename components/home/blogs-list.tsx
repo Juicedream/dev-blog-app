@@ -13,7 +13,7 @@ export default async function BlogsList() {
     );
   }
   return (
-    <div className="w-full flex flex-col gap-4 py-2 px-3 h-200 scroll-smooth overflow-auto overflow-y-scroll scrollbar-none scrollbar-thumb-blue-300 scrollbar-track-blue-500">
+    <div className="w-full flex flex-col gap-10 py-2 px-3 h-200 scroll-smooth overflow-auto overflow-y-scroll scrollbar-none scrollbar-thumb-blue-300 scrollbar-track-blue-500">
       {blogs.map((blog) => (
         <div key={blog.id}>
           <BlogCard blog={blog}>

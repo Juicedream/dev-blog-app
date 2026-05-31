@@ -13,7 +13,7 @@ export default async function EditBlogPage(
 ) {
   const paramsProps = await props;
   const { id } = await paramsProps?.params;
-  const blog = (await fetchBlogById(id)) ?? {};
+  const blog = await fetchBlogById(id);
 
   if (!blog) {
     return (

@@ -9,7 +9,7 @@ export default async function BlogView({
   blogId: string;
   userId: string;
 }) {
-  const blog: Blog = (await fetchBlogById(blogId)) ?? {};
+  const blog: Blog = await fetchBlogById(blogId);
   if (!blog) {
     return (
       <div className="flex flex-col items-center w-full justify-center min-h-dvh">

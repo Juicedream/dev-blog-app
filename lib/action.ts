@@ -117,3 +117,41 @@ export async function updateBlogAction(
   revalidatePath("/");
   redirect("/");
 }
+
+export async function toggleLikeAction(
+  { blogId, userId }: { blogId: string; userId: string },
+  prevState: { liked: boolean; likes: number },
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _formData: FormData,
+) {
+  try {
+    const existing = await sql`
+      SELECT id from likes
+      WHERE blog_id = ${blogId} AND user_id = ${userId}
+    `;
+    if (existing.length > 0) {
+      // Unlike the blog
+      await sql`
+      DELETE FROM likes
+      WHERE blog_id = ${blogId} AND user_id = ${userId}
+      `;
+    } else {
+      // like the blog
+      await sql`
+      INSERT INTO likes (blog_id, user_id)
+      VALUES (${blogId}, ${userId})
+      `;
+    }
+    const result = await sql`
+      SELECT COUNT(*) as count FROM likes WHERE blog_id = ${blogId}
+    `;
+    revalidatePath("/");
+    return {
+      liked: existing.length === 0,
+      likes: Number(result[0].count),
+    };
+  } catch (error) {
+    console.error("Error toggling like: ", error);
+    return prevState;
+  }
+}

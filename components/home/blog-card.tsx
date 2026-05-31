@@ -4,6 +4,8 @@ import { LikeButton } from "@/components/like-button";
 
 import { Blog } from "@/lib/definitions";
 import { shortenText } from "@/utils/helpers";
+import { getUser } from "@/app/lib/dal";
+import { fetchLikesForBlog, fetchUserInitialLike } from "@/lib/data";
 
 type BlogCardProps = {
   blog: Blog;
@@ -11,17 +13,20 @@ type BlogCardProps = {
   showLikeButton?: boolean;
   showStatus?: boolean;
 };
-export default function BlogCard({
+export default async function BlogCard({
   blog,
   showLikeButton = true,
   children,
   showStatus = false,
 }: BlogCardProps) {
+  const user = await getUser();
+  const likesResult = await fetchLikesForBlog(blog.id);
+  const userLike = await fetchUserInitialLike(blog.id, user?.id);
   const blogDescription = shortenText(blog.content, 60);
   const blogTitle = shortenText(blog.title, 40);
   return (
     <main className="w-full rounded-xl h-23">
-      <div className="flex items-center justify-between px-2 py-2 hover:bg-slate-100/50 rounded-xl border-2 border-slate-100">
+      <div className="flex items-center justify-between px-2 py-2 hover:bg-slate-100/50 rounded-xl border-2 border-slate-100 mb-8">
         {/* image and header with description */}
         <div className="flex gap-3">
           <Image
@@ -36,7 +41,14 @@ export default function BlogCard({
             <span className="font-medium text-muted-foreground text-sm">
               {blogDescription}
             </span>
-            {showLikeButton && <LikeButton likes={1.5} />}
+            {showLikeButton && (
+              <LikeButton
+                userId={user?.id}
+                blogId={blog?.id}
+                initialLikes={likesResult}
+                initialLiked={userLike.length > 0}
+              />
+            )}
             {showStatus &&
               (blog.status === "draft" ? (
                 <Badge className="bg-blue-400">Draft</Badge>
