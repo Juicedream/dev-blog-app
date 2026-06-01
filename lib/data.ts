@@ -151,3 +151,11 @@ export async function fetchUserFollows(userId: string) {
 
   return data;
 }
+export async function fetchUserFollowers(userId: string) {
+  const data = await sql`
+    SELECT following_id FROM follows
+    WHERE follower_id = ${userId}
+  `;
+
+  return data;
+}

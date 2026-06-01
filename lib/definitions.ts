@@ -60,6 +60,7 @@ export const adminRoleLinks = [
 
 export const userRoleLinks = [
   { label: "Profile", href: "/user/profile" },
+  { label: "All Devs", href: "/user/devs" },
   { label: "My Blogs", href: "/user/my-blogs" },
 ];
 
