@@ -147,5 +147,5 @@ export async function signInAction(
 
 export async function logout() {
   await deleteSession();
-  redirect("/sign-in");
+  redirect("/");
 }

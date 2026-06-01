@@ -9,12 +9,16 @@ import { extractSimilarItemsFromArrayObj } from "@/utils/helpers";
 
 export default async function Template({ children }: { children: ReactNode }) {
   const currentUser = (await getUser()) ?? null;
-  const users = await usersToFollow(currentUser?.id);
-  const allFollowing = (await fetchUserFollows(currentUser?.id)) ?? [];
-  const extractedFollowersId = extractSimilarItemsFromArrayObj(
-    "follower_id",
-    allFollowing,
-  ) as string[];
+  const users = (currentUser && (await usersToFollow(currentUser?.id))) || [];
+  const allFollowing =
+    (currentUser && (await fetchUserFollows(currentUser?.id))) || [];
+  const extractedFollowersId =
+    (allFollowing &&
+      (extractSimilarItemsFromArrayObj(
+        "follower_id",
+        allFollowing,
+      ) as string[])) ||
+    [];
 
   const link = `/${currentUser?.role}/devs` as string;
   return (

@@ -89,7 +89,7 @@ export default function BlogCardView({
                     Back
                   </Link>
                 </Button>
-                {showLikeButton && (
+                {user && showLikeButton && (
                   <LikeButton
                     blogId={blog.id}
                     userId={user?.id}

@@ -21,7 +21,8 @@ export default async function BlogCard({
 }: BlogCardProps) {
   const user = await getUser();
   const likesResult = await fetchLikesForBlog(blog.id);
-  const userLike = await fetchUserInitialLike(blog.id, user?.id);
+  const userLike =
+    (blog && user && (await fetchUserInitialLike(blog.id, user?.id))) || [];
   const blogDescription = shortenText(blog.content, 60);
   const blogTitle = shortenText(blog.title, 40);
   return (
@@ -41,7 +42,7 @@ export default async function BlogCard({
             <span className="font-medium text-muted-foreground text-sm">
               {blogDescription}
             </span>
-            {showLikeButton && (
+            {user && showLikeButton && (
               <LikeButton
                 userId={user?.id}
                 blogId={blog?.id}

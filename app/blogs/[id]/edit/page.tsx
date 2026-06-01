@@ -24,7 +24,8 @@ export default async function EditBlogPage(
   const user = (await getUser()) as User;
   const content = await marked(blog.content);
   const likesResult = await fetchLikesForBlog(blog.id);
-  const userLike = await fetchUserInitialLike(blog.id, user?.id);
+  const userLike =
+    (blog && user && (await fetchUserInitialLike(blog.id, user?.id))) || [];
 
   if (!blog) {
     return (

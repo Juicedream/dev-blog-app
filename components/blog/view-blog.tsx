@@ -19,7 +19,8 @@ export default async function BlogView({
   const user = (await getUser()) as User;
   const content = await marked(blog.content);
   const likesResult = await fetchLikesForBlog(blog.id);
-  const userLike = await fetchUserInitialLike(blog.id, user?.id);
+  const userLike =
+    (blog && user && (await fetchUserInitialLike(blog.id, user?.id))) || [];
   if (!blog) {
     return (
       <div className="flex flex-col items-center w-full justify-center min-h-dvh">
