@@ -22,6 +22,21 @@ const BlogSchema = z.object({
   updated_at: z.date(),
 });
 
+const UserSchema = z.object({
+  id: z.string(),
+  avatar: z.string().min(12, { error: "Avatar Image is required" }),
+  password: z
+    .string()
+    .min(8, { error: "Password must be at least 8 characters" })
+    .regex(/[a-zA-Z]/, { error: "Password must contain at least one letter." })
+    .regex(/[0-9]/, { error: "Password must contain at least one number." })
+    .regex(/[^a-zA-Z0-9]/, {
+      error: "Password must contain at least one special character.",
+    })
+    .trim(),
+  role: z.enum(["admin", "user"]),
+});
+
 const CreateBlog = BlogSchema.omit({
   id: true,
   created_at: true,
@@ -32,6 +47,9 @@ const UpdateBlog = BlogSchema.omit({
   created_at: true,
   updated_at: true,
 });
+
+const UpdateAvatarImage = UserSchema.omit({ id: true, password: true });
+
 export type BlogState = {
   errors?: {
     user_id?: string[];
@@ -209,4 +227,86 @@ export async function toggleFollowAction(
     console.error("Error following user: ", error);
     return prevState;
   }
+}
+
+export async function updateProfilePicAction(
+  userId: string,
+  prevState: { error: object; message: string | null } | undefined,
+  formData: FormData,
+) {
+  if (!userId) return { error: {}, message: "No user id is provided" };
+  const validatedFields = UpdateAvatarImage.safeParse({
+    avatar: formData.get("avatar"),
+    role: formData.get("role"),
+  });
+  if (!validatedFields.success) {
+    return {
+      error: validatedFields.error.flatten().fieldErrors,
+      message: "Unable to update profile image",
+    };
+  }
+  const { avatar, role } = validatedFields.data;
+  if (!avatar.startsWith("https://images.unsplash.com/photo"))
+    return {
+      error: {},
+      message:
+        "Error: Invalid Image Url provied, Supports only images.unsplash.com/photo",
+    };
+
+  try {
+    await sql`
+      UPDATE users
+      SET avatar = ${avatar}
+      WHERE id = ${userId}
+      `;
+  } catch (error) {
+    console.error("Unable to update the image in the db: ", error);
+    return {
+      error: {},
+      message: "Database Failed to Update image url, try again",
+    };
+  }
+
+  const path = `/${role}/profile`;
+
+  revalidatePath(path);
+  revalidatePath("/");
+}
+
+export async function removeProfileAction(
+  userId: string,
+  prevState: { error: object; message: string | null } | undefined,
+  formData: FormData,
+) {
+  if (!userId) return { error: {}, message: "No user id is provided" };
+  const validatedFields = UpdateAvatarImage.safeParse({
+    avatar: formData.get("avatar"),
+    role: formData.get("role"),
+  });
+  if (!validatedFields.success) {
+    return {
+      error: validatedFields.error.flatten().fieldErrors,
+      message: "Unable to remove profile image",
+    };
+  }
+  const { role } = validatedFields.data;
+
+  try {
+    await sql`
+      UPDATE users
+      SET avatar = null
+      WHERE id = ${userId}
+      `;
+  } catch (error) {
+    console.error("Unable to remove the image from the db: ", error);
+    return {
+      error: {},
+      message: "Database Failed to remove image url, try again",
+    };
+  }
+
+  const path = `/${role}/profile`;
+
+  revalidatePath(path);
+  revalidatePath("/");
 }

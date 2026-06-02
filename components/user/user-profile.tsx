@@ -11,7 +11,7 @@ type UserProfileProps = {
   noOfFollowers: number;
 };
 
-export default function AdminProfile({
+export default function UserProfileComponent({
   currentUser,
   noOfBlogs,
   noOfFollowings,

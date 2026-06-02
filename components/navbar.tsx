@@ -2,9 +2,14 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ComputerIcon } from "lucide-react";
 import NavLinks from "@/components/navlinks";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-import { defaultLinks, adminRoleLinks, userRoleLinks } from "@/lib/definitions";
+import {
+  defaultLinks,
+  adminRoleLinks,
+  userRoleLinks,
+  User,
+} from "@/lib/definitions";
 import { logout } from "@/app/actions/auth";
 import { getUser } from "@/app/lib/dal";
 
@@ -36,9 +41,14 @@ export default async function Navbar() {
         {user && (
           <Avatar>
             <AvatarFallback>{userName}</AvatarFallback>
+            <AvatarImage src={user?.avatar} />
           </Avatar>
         )}
-        <NavLinks routes={routes} handleLogout={handleLogout} />
+        <NavLinks
+          user={user as User}
+          routes={routes}
+          handleLogout={handleLogout}
+        />
       </div>
     </div>
   );

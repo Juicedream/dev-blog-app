@@ -8,6 +8,7 @@ import { BlogActionButtons } from "@/components/blog/blog-action-buttons";
 import { Blog, User } from "@/lib/definitions";
 import { cn } from "@/lib/utils";
 import { BlogContent } from "@/components/blog/blog-content";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function BlogCardView({
   blog,
@@ -114,6 +115,10 @@ export default function BlogCardView({
             </p>
             <div className="flex gap-2 items-center">
               <p className="text-sm font-semibold">Created By:</p>
+              <Avatar>
+                <AvatarFallback>👤</AvatarFallback>
+                <AvatarImage src={blog?.author_avatar} />
+              </Avatar>
               <Badge variant={"default"}>
                 {allowActions ? "You" : blog.author_name}
               </Badge>
