@@ -202,7 +202,6 @@ export async function toggleFollowAction(
       SELECT id FROM follows 
       WHERE follower_id = ${followUserId} AND following_id = ${userId}
     `;
-    console.log({ alreadyFollowing });
 
     let status: boolean;
     if (alreadyFollowing.length > 0) {

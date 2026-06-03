@@ -30,7 +30,7 @@ export default function FollowersSettings({
 }) {
   const role = currentUser?.role as unknown as "admin" | "user";
   const allFollowings = extractSimilarItemsFromArrayObj("id", followings);
-  const followersLength = followings?.length || 0;
+  const followersLength = followers?.length || 0;
   const allFollowers = extractSimilarItemsFromArrayObj("id", followers);
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(1);
