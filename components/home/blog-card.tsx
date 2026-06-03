@@ -11,8 +11,8 @@ type BlogCardProps = {
   showLikeButton?: boolean;
   showStatus?: boolean;
   user?: User;
-  likesResult: number;
-  userLike: string[];
+  likesResult?: number;
+  userLike?: string[] | undefined;
 };
 export default function BlogCard({
   blog,
@@ -25,6 +25,7 @@ export default function BlogCard({
 }: BlogCardProps) {
   const blogDescription = shortenText(blog.content, 60);
   const blogTitle = shortenText(blog.title, 40);
+  const userLikeLength = userLike?.length as unknown as number;
   return (
     <main className="w-full rounded-xl h-23">
       <div className="flex items-center justify-between px-2 py-2 hover:bg-slate-100/50 rounded-xl border-2 border-slate-100 mb-8">
@@ -46,8 +47,8 @@ export default function BlogCard({
               <LikeButton
                 userId={user?.id}
                 blogId={blog?.id}
-                initialLikes={likesResult}
-                initialLiked={userLike.length > 0}
+                initialLikes={likesResult as unknown as number}
+                initialLiked={userLikeLength > 0}
               />
             )}
             {showStatus &&
