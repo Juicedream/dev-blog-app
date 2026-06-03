@@ -49,10 +49,10 @@ export default function FollowersSettings({
   }, [query, page]);
 
   return (
-    <Card>
+    <Card className="w-150 lg:w-full">
       <CardHeader>
         <CardTitle>
-          <div className="flex w-full">
+          <div className="flex">
             <p className="w-3/4">Your Followers</p>
             <Input
               type="search"

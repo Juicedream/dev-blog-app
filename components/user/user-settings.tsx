@@ -54,13 +54,13 @@ function UserSettings({ currentUser }: { currentUser: User }) {
   }, [updateProfileState, removeProfileState]);
 
   return (
-    <Card className="shadow-sm shadow-black/30">
+    <Card className="shadow-sm shadow-black/30 w-150 lg:w-full">
       <CardHeader>
         <CardTitle>Settings</CardTitle>
         <CardDescription>Change and update your profile</CardDescription>
       </CardHeader>
       <CardContent className="text-sm text-muted-foreground">
-        <div className="w-full flex justify-around items-center">
+        <div className="w-full flex flex-col gap-4 lg:gap-0 lg:flex-row justify-around items-center">
           {/* Left */}
           <div className="flex flex-col gpa-3">
             <h3 className="font-bold text-xl">Change Profile image</h3>

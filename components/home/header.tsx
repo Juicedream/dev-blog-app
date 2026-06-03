@@ -1,11 +1,26 @@
 import { geistMono } from "@/lib/fonts";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { PlusIcon } from "lucide-react";
 import Link from "next/link";
-export default function Header({ title }: { title: string }) {
+export default function Header({
+  title,
+  query,
+  setQuery,
+}: {
+  title: string;
+  query: string;
+  setQuery: (queryValue: string) => void;
+}) {
   return (
     <main className="border-b border-slate-200 w-full md:h-15 h-25 flex flex-col md:flex-row items-center justify-between px-2 py-2 md:py-0 md:px-3">
       <h2 className={`${geistMono.variable} text-lg md:text-xl`}>{title}</h2>
+      <Input
+        placeholder="Search blogs.."
+        className="w-60 lg:w-50"
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+      />
       <Button asChild variant={"outline"}>
         <Link href="/blogs/create" className="flex gap-2">
           <PlusIcon />

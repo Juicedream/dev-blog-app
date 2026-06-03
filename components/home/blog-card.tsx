@@ -2,27 +2,27 @@ import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { LikeButton } from "@/components/like-button";
 
-import { Blog } from "@/lib/definitions";
+import { Blog, User } from "@/lib/definitions";
 import { shortenText } from "@/utils/helpers";
-import { getUser } from "@/app/lib/dal";
-import { fetchLikesForBlog, fetchUserInitialLike } from "@/lib/data";
 
 type BlogCardProps = {
   blog: Blog;
   children: React.ReactNode;
   showLikeButton?: boolean;
   showStatus?: boolean;
+  user?: User;
+  likesResult: number;
+  userLike: string[];
 };
-export default async function BlogCard({
+export default function BlogCard({
   blog,
   showLikeButton = true,
   children,
   showStatus = false,
+  user,
+  userLike,
+  likesResult,
 }: BlogCardProps) {
-  const user = await getUser();
-  const likesResult = await fetchLikesForBlog(blog.id);
-  const userLike =
-    (blog && user && (await fetchUserInitialLike(blog.id, user?.id))) || [];
   const blogDescription = shortenText(blog.content, 60);
   const blogTitle = shortenText(blog.title, 40);
   return (

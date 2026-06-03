@@ -137,6 +137,7 @@ export async function fetchLikesForBlog(blogId: string) {
 }
 
 export async function fetchUserInitialLike(blogId: string, userId: string) {
+  if (!blogId || !userId) return [];
   const userLike = await sql`
     SELECT id FROM likes WHERE blog_id = ${blogId} AND user_id = ${userId}
   `;

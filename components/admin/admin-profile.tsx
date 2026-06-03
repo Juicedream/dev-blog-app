@@ -24,7 +24,7 @@ export default function AdminProfile({
   noOfFollowers,
 }: UserProfileProps) {
   return (
-    <div className="w-full min-h-dvh flex flex-col gap-8 px-4 md:px-2 py-4">
+    <div className="w-full min-h-dvh flex flex-col gap-8 px-4 md:px-2 py-4 overflow-y-none">
       <ProfileCards
         currentUser={currentUser}
         noOfBlogs={noOfBlogs}

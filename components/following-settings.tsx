@@ -46,7 +46,7 @@ export default function FollowingSettings({
 
   const total = Math.ceil(followingsLength / dataLimit);
   return (
-    <Card>
+    <Card className="w-150 lg:w-full">
       <CardHeader>
         <CardTitle>
           <div className="flex w-full">
