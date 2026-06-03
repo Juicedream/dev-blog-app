@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use server";
 import postgres from "postgres";
-import { z } from "zod";
+import { success, z } from "zod";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import bcrypt from "bcrypt";
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: "require" });
 
@@ -24,14 +25,16 @@ const BlogSchema = z.object({
 
 const UserSchema = z.object({
   id: z.string(),
-  avatar: z.string().min(12, { error: "Avatar Image is required" }),
+  avatar: z.string().min(12, { message: "Avatar Image is required" }),
   password: z
     .string()
-    .min(8, { error: "Password must be at least 8 characters" })
-    .regex(/[a-zA-Z]/, { error: "Password must contain at least one letter." })
-    .regex(/[0-9]/, { error: "Password must contain at least one number." })
+    .min(8, { message: "Password must be at least 8 characters" })
+    .regex(/[a-zA-Z]/, {
+      message: "Password must contain at least one letter.",
+    })
+    .regex(/[0-9]/, { message: "Password must contain at least one number." })
     .regex(/[^a-zA-Z0-9]/, {
-      error: "Password must contain at least one special character.",
+      message: "Password must contain at least one special character.",
     })
     .trim(),
   role: z.enum(["admin", "user"]),
@@ -49,6 +52,11 @@ const UpdateBlog = BlogSchema.omit({
 });
 
 const UpdateAvatarImage = UserSchema.omit({ id: true, password: true });
+const UpdateUserPassword = UserSchema.omit({
+  id: true,
+  avatar: true,
+  role: true,
+});
 
 export type BlogState = {
   errors?: {
@@ -308,4 +316,51 @@ export async function removeProfileAction(
 
   revalidatePath(path);
   revalidatePath("/");
+}
+
+export type ChangePasswordState = {
+  error?: { password?: string[] };
+  message?: string | null;
+  success?: string | null;
+};
+
+export async function changePassword(
+  userId: string,
+  prevState: ChangePasswordState | undefined,
+  formData: FormData,
+): Promise<ChangePasswordState> {
+  if (!userId)
+    return { error: {}, message: "User Id is required", success: null };
+  const validatedFields = UpdateUserPassword.safeParse({
+    password: formData.get("password"),
+  });
+
+  if (!validatedFields.success) {
+    return {
+      error: validatedFields.error.flatten().fieldErrors,
+      message: "Validation failed",
+      success: null,
+    };
+  }
+
+  const { password } = validatedFields.data;
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  try {
+    await sql`
+    UPDATE users
+    SET password = ${hashedPassword}
+    WHERE id = ${userId}
+    `;
+  } catch (error) {
+    console.error("Unable to change user password: ", error);
+    return {
+      error: {},
+      message: "Database failed to change password, try again",
+      success: null,
+    };
+  }
+
+  revalidatePath("/");
+  return { error: {}, message: null, success: "Password changed successfully" };
 }

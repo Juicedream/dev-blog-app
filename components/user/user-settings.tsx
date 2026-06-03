@@ -14,15 +14,26 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState, useActionState, useEffect } from "react";
-import { updateProfilePicAction, removeProfileAction } from "@/lib/action";
+import {
+  updateProfilePicAction,
+  removeProfileAction,
+  changePassword,
+  ChangePasswordState,
+} from "@/lib/action";
 import { toast } from "sonner";
+import { LoaderPinwheel } from "lucide-react";
+
+type ErrorState = { error: object; message: string | null } | undefined;
 
 function UserSettings({ currentUser }: { currentUser: User }) {
   const [avatarImg, setAvatarImg] = useState(currentUser?.avatar ?? "");
   const [isEditing, setIsEditing] = useState(
     currentUser?.avatar ? false : true,
   );
-  const initialState: { error: object; message: string | null } | undefined = {
+  const [password, setPassword] = useState("");
+  const [confirmPass, setConfirmPass] = useState("");
+
+  const initialState: ErrorState = {
     error: {},
     message: null,
   };
@@ -33,7 +44,7 @@ function UserSettings({ currentUser }: { currentUser: User }) {
   const [updateProfileState, updateProfileAction, profilePicPending] =
     useActionState(updateAvatarImg, initialState);
 
-  const prevState: { error: object; message: string | null } | undefined = {
+  const prevState: ErrorState = {
     error: {},
     message: null,
   };
@@ -44,6 +55,18 @@ function UserSettings({ currentUser }: { currentUser: User }) {
   const [removeProfileState, removeProfilePicAction, removeProfilePicPending] =
     useActionState(removeProfileImg, prevState);
 
+  const changePasswordInitial: ChangePasswordState | undefined = {
+    error: {},
+    message: null,
+    success: null,
+  };
+  const changePasswordAction = changePassword.bind(null, currentUser?.id);
+  const [changePasswordState, changePasswordFormAction, changePasswordPending] =
+    useActionState<ChangePasswordState, FormData>(
+      changePasswordAction,
+      changePasswordInitial,
+    );
+
   useEffect(() => {
     if (updateProfileState?.message) {
       toast.error(updateProfileState.message);
@@ -51,7 +74,23 @@ function UserSettings({ currentUser }: { currentUser: User }) {
     if (removeProfileState?.message) {
       toast.error(removeProfileState.message);
     }
-  }, [updateProfileState, removeProfileState]);
+    if (changePasswordState?.message) {
+      toast.error(changePasswordState.message);
+    }
+    if (changePasswordState?.error?.password) {
+      changePasswordState.error.password.forEach((error) => {
+        toast.error(error);
+      });
+    }
+    function reset() {
+      setPassword("");
+      setConfirmPass("");
+    }
+    if (changePasswordState?.success) {
+      toast.success(changePasswordState.success);
+      reset();
+    }
+  }, [updateProfileState, removeProfileState, changePasswordState]);
 
   return (
     <Card className="shadow-sm shadow-black/30 w-150 lg:w-full">
@@ -148,20 +187,45 @@ function UserSettings({ currentUser }: { currentUser: User }) {
           {/* Right */}
           <div className="flex flex-col gap-3">
             <h3 className="font-bold text-xl">Change Password</h3>
-            <form className="flex flex-col gap-4">
+            <form
+              className="flex flex-col gap-4"
+              action={changePasswordFormAction}
+            >
               <div>
                 <Label htmlFor="new-password" className="mb-2">
                   New password
                 </Label>
-                <Input type="password" id="new-password" />
+                <Input
+                  type="password"
+                  id="new-password"
+                  name="password"
+                  placeholder="*********"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
               </div>
               <div>
                 <Label htmlFor="confirm-password" className="mb-2">
                   Confirm password
                 </Label>
-                <Input type="password" id="confirm-password" />
+                <Input
+                  type="password"
+                  id="confirm-password"
+                  name="confirm-password"
+                  placeholder="*********"
+                  value={confirmPass}
+                  onChange={(e) => setConfirmPass(e.target.value)}
+                />
               </div>
-              <Button disabled>Update</Button>
+              <Button
+                disabled={password !== confirmPass || changePasswordPending}
+              >
+                {changePasswordPending ? (
+                  <LoaderPinwheel className="animate-spin" />
+                ) : (
+                  "Change"
+                )}
+              </Button>
             </form>
           </div>
         </div>
