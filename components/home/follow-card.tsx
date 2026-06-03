@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
-
+import FollowButton from "@/components/follow-button";
 import {
   useState,
   useOptimistic,
@@ -47,6 +47,11 @@ export default function FollowCard({
   // const [following, setFollowing] = useState(false);
   const fallbackName =
     user.name.split(" ")[0].charAt(0) + " " + user.name.split(" ")[1].charAt(0);
+  function handleSubmit() {
+    startTransition(() => {
+      addOptimistic(null);
+    });
+  }
   return (
     <Item variant="outline">
       <ItemMedia>
@@ -60,24 +65,12 @@ export default function FollowCard({
         <ItemDescription>Developer</ItemDescription>
       </ItemContent>
       <ItemActions>
-        <form
-          action={formAction}
-          onSubmit={() => {
-            startTransition(() => {
-              addOptimistic(null);
-            });
-          }}
-        >
-          <Button
-            disabled={pending}
-            size="lg"
-            variant={optimisticState.following ? "secondary" : "default"}
-            aria-label="Follow"
-            className="rounded-xl"
-          >
-            {optimisticState.following ? "Following" : "Follow"}
-          </Button>
-        </form>
+        <FollowButton
+          pending={pending}
+          optimisticState={optimisticState}
+          handleSubmit={handleSubmit}
+          formAction={formAction}
+        />
       </ItemActions>
     </Item>
   );

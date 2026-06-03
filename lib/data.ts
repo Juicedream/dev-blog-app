@@ -159,3 +159,16 @@ export async function fetchUserFollowers(userId: string) {
 
   return data;
 }
+
+export async function fetchMultipleUsersById(userIds: string[]) {
+  if (userIds.length < 1) return;
+  const data = await Promise.all(
+    userIds.map(async (userId) => {
+      return await sql`
+    SELECT * FROM users
+    WHERE id = ${userId}
+  `;
+    }),
+  );
+  return data.flat();
+}

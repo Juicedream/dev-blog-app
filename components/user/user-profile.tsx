@@ -3,10 +3,14 @@ import { User } from "@/lib/definitions";
 import { ProfileCards } from "@/components/profile/profile-cards";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import UserSettings from "@/components/user/user-settings";
+import FollowersSettings from "@/components/followers-settings";
+import FollowingSettings from "@/components/following-settings";
 
 type UserProfileProps = {
   currentUser: User;
   noOfBlogs: number;
+  followers: User[];
+  followings: User[];
   noOfFollowings: number;
   noOfFollowers: number;
 };
@@ -14,6 +18,8 @@ type UserProfileProps = {
 export default function UserProfileComponent({
   currentUser,
   noOfBlogs,
+  followers,
+  followings,
   noOfFollowings,
   noOfFollowers,
 }: UserProfileProps) {
@@ -37,15 +43,28 @@ export default function UserProfileComponent({
             </TabsTrigger>
             <TabsTrigger value="followers">
               <Users2Icon />
-              Followers
+              Followers {`(${noOfFollowers})`}
             </TabsTrigger>
             <TabsTrigger value="followings">
               <User2Icon />
-              Followings
+              Followings {`(${noOfFollowings})`}
             </TabsTrigger>
           </TabsList>
           <TabsContent value="settings">
             <UserSettings currentUser={currentUser} />
+          </TabsContent>
+          <TabsContent value="followers">
+            <FollowersSettings
+              currentUser={currentUser}
+              followers={followers}
+              followings={followings}
+            />
+          </TabsContent>
+          <TabsContent value="followings">
+            <FollowingSettings
+              currentUser={currentUser}
+              followings={followings}
+            />
           </TabsContent>
         </Tabs>
       </div>

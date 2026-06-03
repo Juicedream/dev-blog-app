@@ -131,7 +131,7 @@ export async function signInAction(
 
   const verifiedPassword = await bcrypt.compare(
     password,
-    String(user.password),
+    String(user?.password),
   );
 
   if (!verifiedPassword) {
