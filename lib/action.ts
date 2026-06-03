@@ -179,6 +179,7 @@ export async function toggleLikeAction(
       await sql`
       DELETE FROM likes
       WHERE blog_id = ${blogId} AND user_id = ${userId}
+      
       `;
     } else {
       // like the blog
@@ -263,7 +264,7 @@ export async function updateProfilePicAction(
   try {
     await sql`
       UPDATE users
-      SET avatar = ${avatar}
+      SET avatar = ${avatar}, updated_at = NOW()
       WHERE id = ${userId}
       `;
   } catch (error) {
@@ -301,7 +302,7 @@ export async function removeProfileAction(
   try {
     await sql`
       UPDATE users
-      SET avatar = null
+      SET avatar = null, updated_at = NOW()
       WHERE id = ${userId}
       `;
   } catch (error) {
@@ -349,7 +350,7 @@ export async function changePassword(
   try {
     await sql`
     UPDATE users
-    SET password = ${hashedPassword}
+    SET password = ${hashedPassword}, updated_at = NOW()
     WHERE id = ${userId}
     `;
   } catch (error) {
