@@ -18,5 +18,5 @@ export function showDataByLimit<T>(
 ) {
   const startNumber = page <= 1 ? 0 : (page - 1) * dataLimit;
   const endNumber = startNumber + dataLimit;
-  return array.reverse().slice(startNumber, endNumber);
+  return array.slice(startNumber, endNumber);
 }

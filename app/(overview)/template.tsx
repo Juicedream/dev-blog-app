@@ -25,7 +25,7 @@ export default async function Template({ children }: { children: ReactNode }) {
     <div className="flex flex-col h-screen w-full">
       <div className="flex flex-col md:flex-row justify-between my-4 md:my-6 md:mx-6 mx-2 md:gap-8 gap-10">
         <div className="w-full">{children}</div>
-        {currentUser && allFollowing.length < 2 && (
+        {currentUser && users.length > 0 && (
           <aside className="shrink-0 hidden md:block w-100 rounded-2xl">
             <WhoToFollowCard
               users={users as User[]}
