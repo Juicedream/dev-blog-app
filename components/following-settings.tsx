@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 import {
   Card,
@@ -5,12 +6,19 @@ import {
   CardTitle,
   CardContent,
   CardDescription,
+  CardFooter,
 } from "@/components/ui/card";
 
 import { User } from "@/lib/definitions";
 import { Input } from "@/components/ui/input";
 import FollowCardSettings from "@/components/follow-card-setting";
-import { extractSimilarItemsFromArrayObj } from "@/utils/helpers";
+import {
+  extractSimilarItemsFromArrayObj,
+  showDataByLimit,
+} from "@/utils/helpers";
+import { useMemo, useState } from "react";
+import Pagination from "@/components/pagination";
+
 export default function FollowingSettings({
   currentUser,
   followings,
@@ -21,24 +29,50 @@ export default function FollowingSettings({
   const role = currentUser?.role as unknown as "admin" | "user";
   const allFollowings = extractSimilarItemsFromArrayObj("id", followings);
   const followingsLength = followings?.length || 0;
+  const [query, setQuery] = useState("");
+  const [page, setPage] = useState(1);
+  const dataLimit = 3;
+
+  function sortDevsByQueryAndPage(query: string, pageNo: number) {
+    if (!query) return showDataByLimit(pageNo, followings, dataLimit);
+    return followings.filter((following) =>
+      following.name.toLowerCase().includes(query.toLowerCase()),
+    );
+  }
+
+  const sortedFollowingsData = useMemo(() => {
+    return sortDevsByQueryAndPage(query, page);
+  }, [query, page]);
+
+  const total = Math.ceil(followingsLength / dataLimit);
   return (
     <Card>
       <CardHeader>
         <CardTitle>
           <div className="flex w-full">
             <p className="w-3/4">All Followings</p>
-            <Input type="search" className="w-1/4" />
+            <Input
+              type="search"
+              className="w-1/4"
+              placeholder="Search followings..."
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+            />
           </div>
         </CardTitle>
-        {followingsLength < 1 && (
-          <CardDescription>
-            Start following other devs.{" "}
-            {role === "user" ? "Go to All Devs" : "Go to Devs"}
-          </CardDescription>
-        )}
+        <CardDescription>
+          {followingsLength < 1 ? (
+            <p>
+              Start following other devs.{" "}
+              {role === "user" ? "Go to All Devs" : "Go to Devs"}
+            </p>
+          ) : (
+            <p>Devs you are following</p>
+          )}
+        </CardDescription>
       </CardHeader>
-      <CardContent className="scroll-smooth overflow-auto overflow-y-scroll scrollbar-none h-40">
-        {followings?.map((dev) => {
+      <CardContent className="scroll-smooth overflow-auto overflow-y-scroll scrollbar-none h-52">
+        {sortedFollowingsData?.map((dev) => {
           const following = allFollowings.includes(dev.id);
           return (
             <FollowCardSettings
@@ -49,7 +83,17 @@ export default function FollowingSettings({
             />
           );
         })}
+        {sortedFollowingsData.length < 1 && (
+          <p className="text-sm text-muted-foreground font-bold text-center mt-10">
+            No search result for {query}
+          </p>
+        )}
       </CardContent>
+      <CardFooter>
+        {!query && total > 1 && (
+          <Pagination page={page} setPage={setPage} totalPages={total} />
+        )}
+      </CardFooter>
     </Card>
   );
 }
