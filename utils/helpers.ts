@@ -16,6 +16,7 @@ export function showDataByLimit<T>(
   array: T[],
   dataLimit: number,
 ) {
+  if (array?.length === 0) return [];
   const startNumber = page <= 1 ? 0 : (page - 1) * dataLimit;
   const endNumber = startNumber + dataLimit;
   return array.slice(startNumber, endNumber);

@@ -34,8 +34,10 @@ export default function FollowingSettings({
   const dataLimit = 3;
 
   function sortDevsByQueryAndPage(query: string, pageNo: number) {
-    if (!query) return showDataByLimit(pageNo, followings, dataLimit);
-    return followings.filter((following) =>
+    const followingsArray =
+      followings?.length < 1 || followings === undefined ? [] : followings;
+    if (!query) return showDataByLimit(pageNo, followingsArray, dataLimit);
+    return followingsArray.filter((following) =>
       following.name.toLowerCase().includes(query.toLowerCase()),
     );
   }
@@ -51,13 +53,15 @@ export default function FollowingSettings({
         <CardTitle>
           <div className="flex w-full">
             <p className="w-3/4">All Followings</p>
-            <Input
-              type="search"
-              className="w-1/4"
-              placeholder="Search followings..."
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-            />
+            {sortedFollowingsData.length > 2 && (
+              <Input
+                type="search"
+                className="w-1/4"
+                placeholder="Search followings..."
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+              />
+            )}
           </div>
         </CardTitle>
         <CardDescription>
@@ -83,7 +87,7 @@ export default function FollowingSettings({
             />
           );
         })}
-        {sortedFollowingsData.length < 1 && (
+        {query && sortedFollowingsData.length < 1 && (
           <p className="text-sm text-muted-foreground font-bold text-center mt-10">
             No search result for {query}
           </p>

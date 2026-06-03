@@ -38,8 +38,10 @@ export default function FollowersSettings({
   const totalPages = Math.ceil(followersLength / dataLimit);
 
   function filterDevByQuery(query: string, pageNo: number) {
-    if (!query) return showDataByLimit(pageNo, followers, dataLimit);
-    return followers.filter((follower) =>
+    const followersArray =
+      followers?.length < 1 || followers === undefined ? [] : followers;
+    if (!query) return showDataByLimit(pageNo, followersArray, dataLimit);
+    return followersArray.filter((follower) =>
       follower.name.toLowerCase().includes(query.toLowerCase()),
     );
   }
@@ -54,6 +56,7 @@ export default function FollowersSettings({
         <CardTitle>
           <div className="flex">
             <p className="w-3/4">Your Followers</p>
+
             <Input
               type="search"
               className="w-1/4"
@@ -88,7 +91,7 @@ export default function FollowersSettings({
             />
           );
         })}
-        {sortedFollowersData.length < 1 && (
+        {query && sortedFollowersData.length < 1 && (
           <div className="flex items-center justify-center w-full mt-10">
             <p className="mt-3 text-sm text-muted-foreground">
               No Dev with the name: {query}{" "}
