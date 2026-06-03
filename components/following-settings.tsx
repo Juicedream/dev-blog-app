@@ -53,15 +53,14 @@ export default function FollowingSettings({
         <CardTitle>
           <div className="flex w-full">
             <p className="w-3/4">All Followings</p>
-            {sortedFollowingsData.length > 2 && (
-              <Input
-                type="search"
-                className="w-1/4"
-                placeholder="Search followings..."
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-              />
-            )}
+
+            <Input
+              type="search"
+              className="w-1/4"
+              placeholder="Search followings..."
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+            />
           </div>
         </CardTitle>
         <CardDescription>
